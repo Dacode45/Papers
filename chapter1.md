@@ -59,6 +59,31 @@ This gives us a system of first-order defferntial equations; the rate of change 
 
 We can use the [Euler method](#euler-method) to solve the differential equatoin.
 
+```haskell
+eulerStep :: AccelerationFunction -> Double -> State -> State
+eulerStep a dt (t,r,v) = (t',r',v')
+    where
+        t' = t + dt
+        r' = r ^+^ v ^* dt
+        v' = v ^+^ a(t,r,v) ^* dt
+```
+
+To define any particular one-partical problem we just specify the appropriate acceleration function.
+
+Here's an sattelite example
+```haskell
+satellite :: AccelerationFunction
+satellite (t,r,v) = 6.67e-11 * 5.98e24 / magnitude r ^ 2 *^ u
+    where
+        u = negateV r ^ /  magnitude r
+```
+Annother is the problem of a damped, driven, harmonic oscillator.
+```
+dampedDrivenOsc :: Double -- damping constant
+                -> Double -- drive amplitude
+                -> Double -- drive frequency
+                -> AccelerationFunction
+```
 
 
 # Table of Contents
