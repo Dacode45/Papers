@@ -83,7 +83,29 @@ dampedDrivenOsc :: Double -- damping constant
                 -> Double -- drive amplitude
                 -> Double -- drive frequency
                 -> AccelerationFunction
+dampedDrivenOsc beta driveAmp omega (t,r,v)
+    = (forceDamp ^+^ forceDrvie ^+^ forceSpring) ^/ mass
+        where
+            forceDamp = (-beta) *^ v
+            forceDrive = driveAmp * cos (omega * t) *^ iHat
+            forceSpring = (-k) *^ r
+            mass = 1
+            k = 1
 ```
+
+Using haskell we can generate an infinite list of state changes. 
+```
+solution :: AccelerationFunctoin -> Double -> State -> [State]
+solution a dt = iterate (eulerCromerStep a dt)
+
+states :: [State]
+states = solution (dampedDrivenOsc 0 1 0.7) 0.01 (0, vec 1 0 0, vec 0 0 0)
+```
+
+We can convert that infinite list of states to plot x vs t.
+
+txPairs :: [State] -> [(Double, Double)]
+txPairs sts = [(t, xComp r) | (t,r,v) <- sts]
 
 
 # Table of Contents
