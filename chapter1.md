@@ -109,7 +109,67 @@ txPairs sts = [(t, xComp r) | (t,r,v) <- sts]
 
 # Electromagnetic Theory
 
-## E
+## Electric field produced by continuous charge distribution
+
+![](/assets/Screenshot from 2018-06-02 22-48-57.png)
+
+We can define a curve as the following
+```haskell
+data Curve = Curve {
+    curveFunc :: Double -> Position
+    , startingCurveParam :: Double
+    , endingCurveParam :: Double
+}
+-- Circular loop
+circularLoop :: Double -> Curve
+circularLoop radius
+    = Curve (\t -> cart (radius * cost) (radius * sin t)) 0 (2 * pi)
+    
+line :: Double -> Curve
+line l = Curve (\t -> cart 0 0 t) (-1 / 2) ( 1 / 2 )
+```
+
+Now that we have curves we need to integrate over them. Integrals can have scalar or vector integrands. To calculate the electric field we need to use a vector integrand to calculate an electric potential we can use a scalar integral.
+
+```haskell
+type ScalarField = Position -> Double
+type VectorField = Position -> Vec
+type Field v = Position -> v
+```
+
+A scalar field assigns a scalar to each position in space. A vector field assigns a vector to each position in space. We can refer to fields of any type with `Field v`
+
+Let's get to the integration.
+
+```haskell
+simpleLineIntegral
+    :: (InnerSpace v, Scalar v - Double)
+        => Int -- ^ number of intervals
+    -> Field v -- ^ scalar or vector field
+    -> Curve -- ^ curve to integrate over
+    -> v -- ^ scalar or vector result
+```
+
+The integrator works by chopping the curve into a number of intervals, evaluating hte field on each interval, multiplying by the lenght and summing
+
+We can use this to calculate the electic field of a one-dimentional charge distribution
+
+```haskell
+eFieldFromLineCharge
+    :: ScalarField -- ^ linear charge density lambda
+    -> Curve       -- ^ geometry of the line charge
+    -> VectorField -- ^ electric field (in V/m)
+    
+eFieldFromLineCharge lambda c r
+    = k *^ simpleLineIntegral 1000 integrand c
+        where
+            k = 9e9 -- 1 / (4 * pi * epsilon0)
+            integrand r' = lambda r' *^ d ^/ magnitude d ** 3
+                where 
+                    d = displacement r' r
+```
+
+
 
 # Table of Contents
 
