@@ -107,6 +107,9 @@ We can convert that infinite list of states to plot x vs t.
 txPairs :: [State] -> [(Double, Double)]
 txPairs sts = [(t, xComp r) | (t,r,v) <- sts]
 
+# Electromagnetic Theory
+
+## E
 
 # Table of Contents
 
