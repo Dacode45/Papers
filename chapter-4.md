@@ -19,3 +19,33 @@ Common Types:
 - Predict next frame in a video, given past frames.
 
 ## 4.1.4 Reinforcement Learning
+
+# 4.2 Evaluating machine-learning models
+Lets review evaluation recipies
+
+#### Simple Hold-out Validation
+![](/assets/Screenshot from 2018-06-07 12-08-03.png)
+
+
+
+```
+num_validation_samples = 10000
+np.random.shuffle(data) # Shuffle data
+
+validation_data = data[:num_validation_samples]
+
+training_data = data[:]
+
+model = get_model()
+model.train(training_data)
+validation_score = model.evaluate(validation_data)
+
+# At this point we can tune model, retrain, evaluate, and tun again
+
+model = get_model()
+# Once hyperparameters are tuned, it's common to train your final
+# model from scratch on all non-test data available.
+model.train(np.concatenate([training_data, validation_data]))
+
+test_score = model.evaluate(test_data)
+```
