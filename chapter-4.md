@@ -28,7 +28,7 @@ Lets review evaluation recipies
 
 
 
-```
+```python
 num_validation_samples = 10000
 np.random.shuffle(data) # Shuffle data
 
@@ -62,7 +62,7 @@ Spit data into K sets. For every ith set train on the remaing K-1 sets. Average 
 
 
 
-```
+```python
 k = 4
 num_validation_samples = len(data) // k
 
@@ -111,7 +111,7 @@ Attempt to maintain the following
 - Be homogenious - All featues should take values in roughly the same range.
 
 A stricter practice is to force each feature to have a mean of 0 and a std of 1.
-```
+```python
 # Assuming x is a 2D data matrix
 x -= x.mean(axis=0)
 x /= x.std(axis=0)
